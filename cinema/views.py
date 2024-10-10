@@ -68,8 +68,8 @@ class MovieViewSet(
     queryset = Movie.objects.prefetch_related("genres", "actors")
     serializer_class = MovieSerializer
 
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     @staticmethod
     def _params_to_ints(qs):
@@ -109,7 +109,7 @@ class MovieViewSet(
     @action(
         detail=True,
         permission_classes=(IsAdminUser,),
-        methods=["GET"],
+        methods=["GET", "POST"],
         url_path="upload-image",
 
     )
@@ -128,15 +128,16 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
         .select_related("movie", "cinema_hall")
         .annotate(
             tickets_available=(
-                    F("cinema_hall__rows") * F("cinema_hall__seats_in_row")
+                    F("cinema_hall__rows")
+                    * F("cinema_hall__seats_in_row")
                     - Count("tickets")
             )
         )
     )
     serializer_class = MovieSessionSerializer
 
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
         date = self.request.query_params.get("date")
