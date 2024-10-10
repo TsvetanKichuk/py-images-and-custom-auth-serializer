@@ -1,3 +1,4 @@
+import os
 import pathlib
 import uuid
 
@@ -5,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
-from pip._internal.models.link.Link import ext
 
 
 class CinemaHall(models.Model):
@@ -40,9 +40,12 @@ class Actor(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-def create_custom_path(instance: "Movie", filename: str) -> pathlib.Path:
-    filename = f"{slugify(instance.title)}-{uuid}{ext}" + pathlib.Path(filename).suffix
-    return pathlib.Path("upload/image") / pathlib.Path(filename)
+def create_custom_path(instance: "Movie", filename):
+    _, extension = os.path.splitext(filename)
+    return os.path.join(
+        "uploads/movies/",
+        f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
+    )
 
 
 class Movie(models.Model):

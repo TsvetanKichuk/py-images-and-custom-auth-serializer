@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model, authenticate
-from pip._internal.utils._jaraco_text import _
+from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 
